@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Integração de Funcionários</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f5f5f5;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+    input, textarea, button, select {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .resultado {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eef;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Integração de Funcionários</h1>
+    <h2>Consultar Função</h2>
+    <label for="funcaoSelect">Escolha uma função:</label>
+    <select id="funcaoSelect"></select>
+    <button onclick="consultar()">Consultar</button>
+    <div id="resultado" class="resultado" style="display: none;"></div>
+  </div>
+
+  <div class="container">
+    <h2>Cadastrar Nova Função</h2>
+    <label for="novaFuncao">Nome da Função:</label>
+    <input type="text" id="novaFuncao" placeholder="Ex: Pintor">
+
+    <label for="epis">EPIs necessários (separe por vírgula):</label>
+    <textarea id="epis" rows="3" placeholder="Ex: Óculos de proteção, Luvas, Botina"></textarea>
+
+    <label for="treinamentos">Treinamentos necessários (separe por vírgula):</label>
+    <textarea id="treinamentos" rows="3" placeholder="Ex: NR-6, NR-18"></textarea>
+
+    <button onclick="cadastrar()">Cadastrar Função</button>
+  </div>
+
+  <script>
+    // Funções cadastradas ficam salvas no localStorage
+    let funcoes = JSON.parse(localStorage.getItem("funcoes")) || {
+      "Servente": {
+        epis: ["Touca Árabe", "Bola Cravo", "Botina de Segurança", "Capacete Tipo B", "Cinto de Segurança", "Jugular","Luva", "Meia (3 Unidades)", "Óculos Leopardo", "Protetor Auricular (Concha se para Montador)", "Protetor Solar", "Uniforme (Blusão e Calça Amarelos)", "Carneira para capacete"
+        ],
+        treinamentos: ["NR-18", "NR-6", "NR-35"]
+      },
+      "Operador de Maquina": {
+        epis: ["Touca Árabe", "Bola Cravo", "Botina de Segurança", "Capacete Tipo B", "Cinto de Segurança", "Jugular","Luva", "Meia (3 Unidades)", "Óculos Leopardo", "Protetor Auricular (Concha se para Montador)", "Protetor Solar", "Uniforme (Blusão e Calça Amarelos)", "Carneira para capacete"],
+        treinamentos: ["NR-18", "NR-6", "NR-35"]
+      },
+      "Eletricista": {
+        epis: ["Touca Árabe", "Bola Cravo", "Botina de Segurança", "Capacete Tipo B", "Cinto de Segurança", "Jugular","Luva", "Meia (3 Unidades)", "Óculos Leopardo", "Protetor Auricular (Concha se para Montador)", "Protetor Solar", "Uniforme (Blusão e Calça Amarelos)", "Carneira para capacete"],
+        treinamentos: ["NR-18", "NR-6", "NR-35", "NR-10"]
+      },
+      "Montador": {
+        epis:["Touca Árabe", "Bola Cravo", "Botina de Segurança", "Capacete Tipo B", "Cinto de Segurança", "Jugular","Luva", "Meia (3 Unidades)", "Óculos Leopardo", "Protetor Auricular (Concha se para Montador)", "Protetor Solar", "Uniforme (Blusão e Calça Amarelos)", "Carneira para capacete"],
+        treinamentos: ["NR-18", "NR-6", "NR-35"]
+      },
+      "Armador": {
+        epis:["Touca Árabe", "Bola Cravo", "Botina de Segurança", "Capacete Tipo B", "Cinto de Segurança", "Jugular","Luva", "Meia (3 Unidades)", "Óculos Leopardo", "Protetor Auricular (Concha se para Montador)", "Protetor Solar", "Uniforme (Blusão e Calça Amarelos)", "Carneira para capacete"],
+        treinamentos: ["NR-18", "NR-6", "NR-35"]
+      },
+      "Bombeiro Hidraúlico": {
+        epis:["Touca Árabe", "Bola Cravo", "Botina de Segurança", "Capacete Tipo B", "Cinto de Segurança", "Jugular","Luva", "Meia (3 Unidades)", "Óculos Leopardo", "Protetor Auricular (Concha se para Montador)", "Protetor Solar", "Uniforme (Blusão e Calça Amarelos)", "Carneira para capacete"],
+        treinamentos: ["NR-18", "NR-6", "NR-35"]
+      },
+    };
+
+    // Preenche o select com as funções
+    function atualizarSelect() {
+      const select = document.getElementById("funcaoSelect");
+      select.innerHTML = "";
+      Object.keys(funcoes).forEach(f => {
+        let option = document.createElement("option");
+        option.value = f;
+        option.textContent = f;
+        select.appendChild(option);
+      });
+    }
+
+    // Consultar função
+    function consultar() {
+      const funcao = document.getElementById("funcaoSelect").value;
+      const resultado = document.getElementById("resultado");
+      resultado.style.display = "block";
+
+      const dados = funcoes[funcao];
+      let info = `
+        <h3>Função: ${funcao}</h3>
+        <p><strong>EPIs necessários:</strong></p>
+        <ul>${dados.epis.map(e => `<li>${e}</li>`).join("")}</ul>
+        <p><strong>Treinamentos obrigatórios:</strong></p>
+        <ul>${dados.treinamentos.map(t => `<li>${t}</li>`).join("")}</ul>
+      `;
+
+      resultado.innerHTML = info;
+    }
+
+    // Cadastrar nova função
+    function cadastrar() {
+      const nome = document.getElementById("novaFuncao").value.trim();
+      const epis = document.getElementById("epis").value.split(",").map(e => e.trim()).filter(e => e);
+      const treinamentos = document.getElementById("treinamentos").value.split(",").map(t => t.trim()).filter(t => t);
+
+      if (!nome || epis.length === 0 || treinamentos.length === 0) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      funcoes[nome] = { epis, treinamentos };
+
+      // Salva no localStorage
+      localStorage.setItem("funcoes", JSON.stringify(funcoes));
+
+      atualizarSelect();
+
+      // Limpa os campos
+      document.getElementById("novaFuncao").value = "";
+      document.getElementById("epis").value = "";
+      document.getElementById("treinamentos").value = "";
+
+      alert("Função cadastrada com sucesso!");
+    }
+
+    // Inicializa
+    atualizarSelect();
+  </script>
+</body>
+</html>
