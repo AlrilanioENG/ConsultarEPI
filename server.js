@@ -8,10 +8,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Config Supabase
+
 const supabase = createClient(
-  "SUA_SUPABASE_URL",
-  "SUA_SUPABASE_CHAVE_ANON"
+  process.env.SUPABASE_URL,
+
+  process.env.SUPABASE_KEY
 );
 
 // Listar funções
