@@ -6,31 +6,31 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        margin: 30px;
+        margin: 50px;
         background-color: #f5f5f5;
       }
       h1,
       h2 {
-        color: #333;
+        color: #000000;
       }
       .container {
-        background: white;
-        padding: 20px;
+        background: rgb(207, 206, 252);
+        padding: 50px;
         border-radius: 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-        max-width: 700px;
-        margin-bottom: 20px;
+        max-width: 800px;
+        margin-bottom: 10px;
       }
       input,
       textarea,
       button,
       select {
         padding: 10px;
-        margin-top: 10px;
+        margin-top: 30px;
         width: 100%;
         font-size: 16px;
         border: 1px solid #ccc;
-        border-radius: 6px;
+        border-radius: 10px;
       }
       button {
         background-color: #4caf50;
@@ -59,29 +59,6 @@
       <div id="resultado" class="resultado" style="display: none"></div>
     </div>
 
-    <div class="container">
-      <h2>Cadastrar Nova Função</h2>
-      <label for="novaFuncao">Nome da Função:</label>
-      <input type="text" id="novaFuncao" placeholder="Ex: Pintor" />
-
-      <label for="epis">EPIs necessários (separe por vírgula):</label>
-      <textarea
-        id="epis"
-        rows="3"
-        placeholder="Ex: Óculos de proteção, Luvas, Botina"
-      ></textarea>
-
-      <label for="treinamentos"
-        >Treinamentos necessários (separe por vírgula):</label
-      >
-      <textarea
-        id="treinamentos"
-        rows="3"
-        placeholder="Ex: NR-6, NR-18"
-      ></textarea>
-
-      <button onclick="cadastrar()">Cadastrar Função</button>
-    </div>
 
     <script>
       // Funções cadastradas ficam salvas no localStorage
@@ -208,23 +185,8 @@
         });
       }
 
-      // Consultar função
-      function consultar() {
-        const funcao = document.getElementById("funcaoSelect").value;
-        const resultado = document.getElementById("resultado");
-        resultado.style.display = "block";
 
-        const dados = funcoes[funcao];
-        let info = `
-        <h3>Função: ${funcao}</h3>
-        <p><strong>EPIs necessários:</strong></p>
-        <ul>${dados.epis.map((e) => `<li>${e}</li>`).join("")}</ul>
-        <p><strong>Treinamentos obrigatórios:</strong></p>
-        <ul>${dados.treinamentos.map((t) => `<li>${t}</li>`).join("")}</ul>
-      `;
 
-        resultado.innerHTML = info;
-      }
 
       // Cadastrar nova função
       function cadastrar() {
